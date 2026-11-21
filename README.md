@@ -1,4 +1,4 @@
-# Impact of Sampling Parameters on Text–Image Alignment, Perceptual Variation across Seeds, and Generation Time in Stable Diffusion 1.5
+# Impact of Sampling Parameters on the Text–Image Alignment and Speed of Diffusion-Based Image Generation
 
 **Alexander Stetsenko and Gil Maksim**
 
