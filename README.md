@@ -1,0 +1,41 @@
+# Impact of Sampling Parameters on Text–Image Alignment, Perceptual Variation across Seeds, and Generation Time in Stable Diffusion 1.5
+
+**Alexander Stetsenko and Gil Maksim**
+
+This repository contains the measured generation runs, image-level CLIP scores, pairwise LPIPS distances, and analysis code for the paper. Stable Diffusion 1.5 generated 450 images on a GeForce RTX 3050 Laptop GPU with 4 GiB of graphics memory and model-level CPU offloading. We compared DDIM, Euler, and DPM-Solver++ 2M at 5, 10, 20, 30, and 50 steps using the same ten prompts and three seeds. Each of the 15 configurations contributed 30 measured images. A separate warm-up for each configuration was excluded.
+
+## Reproduce the results
+
+From the repository directory, run the following commands in a Python environment. The analysis was verified with Python 3.12 and NumPy 2.3.5. The calculation uses the saved measurements and runs on a CPU.
+
+```sh
+python -m pip install -r requirements.txt
+python sampling_statistics.py
+```
+
+The script regenerates the four CSV files in `results/`. To write them to another directory, use `python sampling_statistics.py --output reproduced`.
+
+## Data
+
+| File | Contents |
+|---|---|
+| `data/runs.csv` | One row for each of the 450 measured runs, including the sampler, step count, prompt, seed, pipeline time, GPU memory peaks, U-Net call count, safety flag, and image SHA-256 digest. |
+| `data/clip_scores.csv` | One CLIP Score per image, keyed by run ID and image digest. Scores use 100 times the image–text cosine similarity, clipped below at zero. |
+| `data/lpips_pairs.csv` | The three LPIPS distances between the three seeds for each prompt and configuration, with both run IDs for each pair. |
+
+The exact timestep sequences, noise scales, sampler presets, and fixed generation settings are in `data/sampling_schedules.json`. Each sequence was checked against every recorded run for its sampler and step count.
+
+The measurements are for 512 × 512 images generated with a guidance scale of 7.5. Generation time covers the pipeline call, including model transfers and the safety check. Image encoding and metric computation took place after timing.
+
+## Mapping the outputs to the paper
+
+| Output | Corresponding results |
+|---|---|
+| `results/metrics_summary.csv` | Tables I–III. `time_median_s` is the median of the 30 runs and `rate_images_per_s` is its reciprocal. Each memory column gives the maximum across those runs. |
+| `results/per_prompt_metrics.csv` | CLIP Score averaged over three images and LPIPS averaged over three seed pairs for each of the 150 prompt–configuration combinations. |
+| `results/paired_step_comparisons.csv` | Table IV uses the rows from 20 to 50 steps. `clip_mean_difference` is the later score minus the earlier score. `prompts_improved` is the number of positive prompt-level differences out of ten. `time_ratio` divides the later median time by the earlier median time. |
+| `results/five_step_sampler_comparisons.csv` | The two comparisons in Section VII. Positive differences favor DPM-Solver++ 2M over the sampler named in `reference_sampler`. |
+
+The CLIP and LPIPS condition means give each prompt equal weight. All reported 95% intervals use the 2.5th and 97.5th percentiles of 10,000 bootstrap draws of ten prompts with replacement, using seed 20261117. Each draw retains all three seeds for the sampled prompt. For paired contrasts the script resamples the within-prompt differences using the same draws for both configurations. Image-generation seeds were 42, 1234, and 2026.
+
+At five steps, the mean paired CLIP Score difference was 0.963 points for DPM-Solver++ 2M versus DDIM (95% interval, −0.245 to 2.222) and 1.008 points versus Euler (0.209 to 2.014). These comparisons include differences in both the numerical update and the timestep schedule.
