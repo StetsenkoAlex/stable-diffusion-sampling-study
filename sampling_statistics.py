@@ -143,7 +143,9 @@ def load_release(data):
 def main():
     root = Path(__file__).resolve().parent
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--data", type=Path, default=root / "data")
+    data_dir = root / "data"
+    default_data = data_dir if (data_dir / "runs.csv").is_file() else root
+    parser.add_argument("--data", type=Path, default=default_data)
     parser.add_argument("--output", type=Path, default=root / "results")
     args = parser.parse_args()
     results = summarize(*load_release(args.data))
