@@ -39,3 +39,19 @@ The measurements are for 512 × 512 images generated with a guidance scale of 7.
 The CLIP and LPIPS condition means give each prompt equal weight. All reported 95% intervals use the 2.5th and 97.5th percentiles of 10,000 bootstrap draws of ten prompts with replacement, using seed 20261117. Each draw retains all three seeds for the sampled prompt. For paired contrasts the script resamples the within-prompt differences using the same draws for both configurations. Image-generation seeds were 42, 1234, and 2026.
 
 At five steps, the mean paired CLIP Score difference was 0.963 points for DPM-Solver++ 2M versus DDIM (95% interval, −0.245 to 2.222) and 1.008 points versus Euler (0.209 to 2.014). These comparisons include differences in both the numerical update and the timestep schedule.
+## Generation prompts
+
+We used the same ten English prompts for all 15 combinations of sampler and denoising step count. The IDs below match the `prompt_id` values in `runs.csv`.
+
+| ID | Prompt |
+| --- | --- |
+| P01 | a red car on a snowy mountain road, realistic photograph, natural lighting, detailed |
+| P02 | snow-covered mountain peaks under a starry night sky, landscape photograph |
+| P03 | a golden retriever sitting in a green meadow, daylight, realistic photograph |
+| P04 | a blue ceramic mug on a wooden table beside a window, product photograph |
+| P05 | a small stone house beside a lake, distant mountains, morning light, photograph |
+| P06 | a modern living room with a grey sofa, wooden floor and large windows, interior photograph |
+| P07 | portrait photograph of an adult woman wearing a green coat, plain background, soft light |
+| P08 | a red apple and a yellow banana on a white plate, still life photograph |
+| P09 | a yellow bicycle leaning against a blue wall, a flower pot on the ground beside it, photograph |
+| P10 | a watercolor illustration of a lighthouse on a rocky island at sunset |
