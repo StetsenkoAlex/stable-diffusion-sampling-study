@@ -55,3 +55,28 @@ We used the same ten English prompts for all 15 combinations of sampler and deno
 | P08 | a red apple and a yellow banana on a white plate, still life photograph |
 | P09 | a yellow bicycle leaning against a blue wall, a flower pot on the ground beside it, photograph |
 | P10 | a watercolor illustration of a lighthouse on a rocky island at sunset |
+**### Added latency and 95% confidence intervals (Section IV.B)
+
+The table shows how much time each screening method added on the 120 held-out
+questions in each language. For each question, we subtracted the control
+request time from the request time with screening enabled. The reported
+estimate is the median of those 120 paired differences. All times are in
+milliseconds.
+
+| Screening method | Control | English median (95% CI), ms | Russian median (95% CI), ms |
+|---|---|---:|---:|
+| Detector | Baseline | 54.1 (43.8–66.2) | 101.7 (73.1–125.2) |
+| Verifier | Baseline | 215.2 (200.9–236.0) | 223.0 (199.2–258.9) |
+| Detector with prompt hardening | Prompt hardening alone | 30.5 (23.2–43.2) | 80.5 (25.3–130.1) |
+
+For each estimate, we sampled 120 question IDs with replacement 10,000 times
+using seed 42. We calculated the median paired difference in each sample
+and used the 2.5th and 97.5th percentiles as the confidence limits.
+These intervals describe variation across questions in the archived run.
+Timings on another computer may differ.
+
+To reproduce the table from the archived log, run
+`python experiment/recalculate_latency.py` from the repository root.
+The [archived output](experiment/latency_results.txt) also lists median
+end-to-end times separately for allowed and blocked requests wherever
+that group contained at least one request.**
